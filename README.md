@@ -1,2 +1,2 @@
 # webai
-web ai nhắn tin qua api
+web ai nhắn tin qua api gemmini 
