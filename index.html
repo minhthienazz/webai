@@ -1,0 +1,333 @@
+<!DOCTYPE html><html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gemmini Chat — AI siêu mượt | by Nguyễn Minh Thiện</title>
+  <meta name="description" content="Trang chat AI mượt, đẹp, hiệu ứng sống động. Hỗ trợ đăng ký ChatGPT giá rẻ, Gemmini AI giá rẻ x100, công cụ AI, xác minh tài khoản sinh viên. Liên hệ Messenger: minhthienkey." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{ --bg1:#0b1020;--bg2:#101936;--acc:#6df0ff;--acc2:#8b5cf6;--acc3:#22d3ee;--border:#1f2a44; }
+    html,body{height:100%}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,'Apple Color Emoji','Segoe UI Emoji';background: radial-gradient(1200px 800px at 70% -10%, rgba(139,92,246,.25), transparent 60%), radial-gradient(900px 700px at -10% 120%, rgba(34,211,238,.25), transparent 60%), linear-gradient(180deg, var(--bg1), var(--bg2)); color:#e9f2ff; overflow-x:hidden}
+    .halo{position:fixed;inset:-20vh;-webkit-filter: blur(120px);filter: blur(120px);opacity:.55;pointer-events:none;background: conic-gradient(from 180deg, #8b5cf6, #22d3ee, #06b6d4, #38bdf8, #8b5cf6);} 
+    .animate-float{animation:float 12s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(18px)}}
+    .glass{background:linear-gradient( rgba(255,255,255,.05), rgba(255,255,255,.02));backdrop-filter: blur(14px);-webkit-backdrop-filter: blur(14px); border:1px solid rgba(255,255,255,.08)}
+    .neon-border{position:relative;border-radius:20px}
+    .neon-border:before{content:"";position:absolute;inset:-2px;border-radius:22px;padding:2px;background:linear-gradient(90deg, rgba(139,92,246,.8), rgba(34,211,238,.8));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite: xor;mask-composite: exclude;opacity:.6}
+    .btn{position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.12)}
+    .btn:after{content:"";position:absolute;inset:0;background:radial-gradient(600px circle at var(--x) var(--y), rgba(255,255,255,.18), transparent 40%);opacity:0;transition:opacity .25s}
+    .btn:hover:after{opacity:1}
+    .btn-primary{background:linear-gradient(135deg,#7c3aed,#06b6d4)}
+    .btn-primary:hover{filter:brightness(1.1)}
+    .input{background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:12px 14px; outline:none; transition: box-shadow .25s, border-color .25s}
+    .input:focus{box-shadow:0 0 0 6px rgba(99,102,241,.15), inset 0 0 0 1px rgba(255,255,255,.4); border-color:#7c3aed}
+    .bubble{max-width:80%; padding:12px 14px; border-radius:16px; border:1px solid rgba(255,255,255,.08)}
+    .bubble.user{background:linear-gradient(180deg, rgba(124,58,237,.25), rgba(124,58,237,.15)); align-self:flex-end}
+    .bubble.ai{background:linear-gradient(180deg, rgba(34,211,238,.18), rgba(34,211,238,.08)); align-self:flex-start}
+    .typing span{display:inline-block; width:6px; height:6px; margin:0 2px; background:#c2e9ff; border-radius:50%; animation: blink 1s infinite}
+    .typing span:nth-child(2){animation-delay:.2s}
+    .typing span:nth-child(3){animation-delay:.4s}
+    @keyframes blink{0%,80%,100%{opacity:.2; transform:translateY(0)}40%{opacity:1; transform:translateY(-3px)}}
+    .toast{position:fixed; right:18px; bottom:18px; z-index:60}
+    .modal-backdrop{position:fixed; inset:0; background:rgba(6,11,25,.65); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display:flex; align-items:center; justify-content:center; z-index:50}
+    .modal-card{width:min(720px,92vw)}
+    .modal-enter{animation:pop .35s ease}
+    @keyframes pop{0%{transform:translateY(12px) scale(.98); opacity:0}100%{transform:translateY(0) scale(1); opacity:1}}
+    .tool-card{transition: transform .25s, box-shadow .25s}
+    .tool-card:hover{transform: translateY(-4px); box-shadow: 0 10px 40px rgba(0,0,0,.35)}
+    ::-webkit-scrollbar{height:10px;width:10px}::-webkit-scrollbar-thumb{background:linear-gradient(#7c3aed,#06b6d4); border-radius:999px}
+  </style>
+</head>
+<body>
+  <div class="halo animate-float"></div>  <!-- Modal (Hiển thị khi vào web) -->  <div id="introModal" class="modal-backdrop hidden">
+    <div class="modal-card neon-border glass p-6 md:p-8 rounded-2xl">
+      <div class="flex items-start gap-4">
+        <div class="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-violet-500/30 to-cyan-400/30 border border-white/15">🪄</div>
+        <div class="flex-1">
+          <h3 class="text-2xl md:text-3xl font-extrabold leading-tight">Chào mừng đến <span class="text-cyan-300">Gemmini Chat</span> ✨</h3>
+          <p class="mt-2 text-white/80">Nơi trải nghiệm <b>chat AI</b> mượt, hiệu ứng đã mắt, tiện ích đầy đủ. Trước khi vào, xem nhanh các dịch vụ nổi bật:</p>
+          <ul class="mt-4 grid sm:grid-cols-2 gap-3">
+            <li class="tool-card glass rounded-xl p-3 border border-white/10">✅ <b>Đăng ký ChatGPT giá rẻ</b></li>
+            <li class="tool-card glass rounded-xl p-3 border border-white/10">🚀 <b>Gemmini AI giá rẻ x100</b></li>
+            <li class="tool-card glass rounded-xl p-3 border border-white/10">🧰 <b>Các công cụ AI đa năng</b></li>
+            <li class="tool-card glass rounded-xl p-3 border border-white/10">🎓 <b>Hỗ trợ xác minh tài khoản sinh viên</b></li>
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="https://m.me/minhthienkey" target="_blank" class="btn btn-primary px-5 py-3 rounded-xl font-semibold">Liên hệ Messenger</a>
+            <button id="closeModal" class="btn px-5 py-3 rounded-xl font-semibold bg-white/5 hover:bg-white/10">Vào trang</button>
+          </div>
+          <p class="mt-4 text-sm text-white/60">Tạo bởi <b>Nguyễn Minh Thiện</b> • <a class="underline hover:no-underline" href="https://m.me/minhthienkey" target="_blank">message</a></p>
+        </div>
+      </div>
+    </div>
+  </div>  <!-- Header -->  <header class="relative z-10">
+    <nav class="max-w-7xl mx-auto px-5 py-6 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-900/40">⚡</div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">Gemmini Chat</h1>
+          <p class="text-xs text-white/60">AI siêu mượt • Khung viền chuẩn đẹp</p>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-3">
+        <a href="https://m.me/minhthienkey" target="_blank" class="btn px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10">Messenger</a>
+        <span class="px-3 py-1 rounded-lg text-xs glass border border-white/10">Tạo bởi <b>Nguyễn Minh Thiện</b></span>
+      </div>
+    </nav>
+  </header>  <!-- Main -->  <main class="relative z-10 max-w-7xl mx-auto px-5 pb-24">
+    <section class="mt-2 md:mt-6 grid lg:grid-cols-3 gap-6">
+      <!-- Chat Panel -->
+      <div class="lg:col-span-2 neon-border glass rounded-2xl p-4 md:p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg md:text-xl font-bold">Trò chuyện với AI</h2>
+            <p class="text-white/60 text-sm">Tập trung chủ yếu về chat AI. Hiệu ứng mượt, phản hồi nhanh.</p>
+          </div>
+          <div class="text-xs text-white/60">Engine: <span class="font-semibold text-white">Gemini/Gemmini</span></div>
+        </div>
+        <div id="chatWindow" class="mt-4 h-[56vh] md:h-[58vh] overflow-y-auto flex flex-col gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+          <div class="bubble ai">Xin chào! Nhập câu hỏi để bắt đầu nhé 💬</div>
+        </div>
+        <div class="mt-4 flex items-end gap-3">
+          <div class="flex-1 relative">
+            <textarea id="userInput" rows="1" placeholder="Nhập tin nhắn..." class="input w-full resize-none pr-28" oninput="autoGrow(this)"></textarea>
+            <div class="absolute right-2 bottom-2 flex items-center gap-2">
+              <button id="clearBtn" class="btn px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-sm">Xoá</button>
+              <button id="sendBtn" class="btn btn-primary px-4 py-2 rounded-lg font-semibold">Gửi</button>
+            </div>
+          </div>
+        </div><!-- Provider & Config -->
+    <div class="mt-4 grid md:grid-cols-2 gap-3 text-xs text-white/80">
+      <div class="glass rounded-xl p-3 border border-white/10">
+        <div class="font-semibold text-sm mb-2">Nhà cung cấp</div>
+        <label class="mr-4 text-sm"><input type="radio" name="provider" value="gemini" class="accent-cyan-400" checked> Google Gemini</label>
+        <label class="text-sm"><input type="radio" name="provider" value="openai" class="accent-cyan-400"> OpenAI‑compatible</label>
+        <div class="text-xs text-white/60 mt-2">Gemini dùng <code>API key</code> và không cần ENDPOINT. OpenAI‑compatible cần cả <code>endpoint</code> + <code>key</code>.</div>
+      </div>
+      <div class="glass rounded-xl p-3 border border-white/10">
+        <label class="flex items-center gap-2 text-sm font-semibold"><input id="useDefault" type="checkbox" class="accent-cyan-400"/> Dùng cấu hình API mặc định</label>
+        <div class="mt-2 grid grid-cols-2 gap-2">
+          <input id="endpoint" class="input text-xs py-2" placeholder="Endpoint (chỉ cho OpenAI‑compatible)" />
+          <input id="model" class="input text-xs py-2" placeholder="Model (vd: gemini-1.5-flash)" />
+        </div>
+        <div class="mt-2 flex items-center gap-2">
+          <input id="apiKey" class="input text-xs py-2 flex-1" placeholder="Dán API key (Gemini hoặc OpenAI‑compatible)" />
+          <button id="saveKey" class="btn px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs">Lưu</button>
+        </div>
+        <label class="mt-2 flex items-center gap-2"><input id="streaming" type="checkbox" class="accent-cyan-400"/> Giả lập streaming (khi chưa bật API thật)</label>
+      </div>
+    </div>
+
+    <div class="mt-3 flex flex-wrap items-center gap-4 text-xs text-white/60">
+      <label class="flex items-center gap-2"><input id="enterToSend" type="checkbox" class="accent-cyan-400" checked/> Enter để gửi</label>
+    </div>
+  </div>
+
+  <!-- Tools / Offers -->
+  <div class="space-y-6">
+    <div class="neon-border glass rounded-2xl p-5">
+      <h3 class="text-lg font-bold">Dịch vụ nổi bật</h3>
+      <div class="mt-4 grid gap-3">
+        <a class="tool-card glass rounded-xl p-4 border border-white/10 block" href="https://m.me/minhthienkey" target="_blank">
+          <div class="text-sm text-white/60">Ưu đãi</div>
+          <div class="font-semibold">Đăng ký ChatGPT giá rẻ</div>
+          <div class="text-xs text-white/60 mt-1">Tư vấn nhanh trong 5 phút</div>
+        </a>
+        <a class="tool-card glass rounded-xl p-4 border border-white/10 block" href="https://m.me/minhthienkey" target="_blank">
+          <div class="text-sm text-white/60">Siêu tiết kiệm</div>
+          <div class="font-semibold">Gemmini AI giá rẻ x100</div>
+          <div class="text-xs text-white/60 mt-1">Hiệu năng cao • Chi phí thấp</div>
+        </a>
+        <a class="tool-card glass rounded-xl p-4 border border-white/10 block" href="https://m.me/minhthienkey" target="_blank">
+          <div class="text-sm text-white/60">Tiện ích</div>
+          <div class="font-semibold">Các công cụ AI</div>
+          <div class="text-xs text-white/60 mt-1">Sinh nội dung, hình ảnh, tự động hoá</div>
+        </a>
+        <a class="tool-card glass rounded-xl p-4 border border-white/10 block" href="https://m.me/minhthienkey" target="_blank">
+          <div class="text-sm text-white/60">Sinh viên</div>
+          <div class="font-semibold">Hỗ trợ xác minh tài khoản sinh viên</div>
+          <div class="text-xs text-white/60 mt-1">Nhiều ưu đãi dành riêng</div>
+        </a>
+      </div>
+      <div class="mt-4">
+        <a href="https://m.me/minhthienkey" target="_blank" class="btn btn-primary w-full py-3 rounded-xl font-semibold">Liên hệ ngay</a>
+      </div>
+    </div>
+
+    <div class="neon-border glass rounded-2xl p-5">
+      <h3 class="text-lg font-bold">Thông tin</h3>
+      <ul class="mt-3 text-sm text-white/80 space-y-2">
+        <li>Người tạo: <b>Nguyễn Minh Thiện</b></li>
+        <li>Liên hệ: <a class="underline hover:no-underline" href="https://m.me/minhthienkey" target="_blank">Messenger</a></li>
+        <li>Tập trung: <b>Chat AI</b> với giao diện đẹp & hiệu ứng hiện đại</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </main>  <footer class="relative z-10 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-5 py-6 text-sm text-white/60 flex flex-wrap items-center gap-3 justify-between">
+      <span>© <span id="year"></span> Gemmini Chat • Made with ❤️ by <b>Nguyễn Minh Thiện</b></span>
+      <div class="flex items-center gap-3">
+        <a href="https://m.me/minhthienkey" target="_blank" class="underline hover:no-underline">Liên hệ message</a>
+      </div>
+    </div>
+  </footer>  <div class="toast"></div>  <script>
+    // ==== CẤU HÌNH MẶC ĐỊNH ====
+    const DEFAULTS = {
+      PROVIDER: 'gemini', // 'gemini' | 'openai'
+      ENDPOINT: '',       // chỉ dùng nếu PROVIDER='openai'
+      MODEL: 'gemini-1.5-flash',
+      API_KEY: 'AIzaSyBra2tDCWSIlY9OzLwwHr3we51vcajR58w'         // không hardcode key thật
+    }
+
+    // Modal
+    const modal = document.getElementById('introModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    window.addEventListener('DOMContentLoaded', ()=>{
+      modal.classList.remove('hidden');
+      modal.querySelector('.modal-card').classList.add('modal-enter');
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })
+    closeModalBtn?.addEventListener('click', ()=> modal.classList.add('hidden'))
+
+    // Ripple
+    document.querySelectorAll('.btn').forEach(btn=>{
+      btn.addEventListener('mousemove', e=>{
+        const rect = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty('--x', `${e.clientX - rect.left}px`)
+        e.currentTarget.style.setProperty('--y', `${e.clientY - rect.top}px`)
+      })
+    })
+
+    // Auto grow
+    function autoGrow(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight, 220)+'px' }
+
+    // Toast
+    function toast(msg){
+      const t=document.createElement('div');
+      t.className='glass border border-white/10 rounded-xl px-4 py-3 text-sm shadow-xl';
+      t.textContent=msg; document.querySelector('.toast').appendChild(t);
+      setTimeout(()=>{t.style.opacity=.0; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(),400)},1800)
+    }
+
+    // Chat logic
+    const chatWindow = document.getElementById('chatWindow');
+    const input = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const enterToSend = document.getElementById('enterToSend');
+    const streaming = document.getElementById('streaming');
+    const apiKeyInput = document.getElementById('apiKey');
+    const saveKeyBtn = document.getElementById('saveKey');
+    const useDefault = document.getElementById('useDefault');
+    const endpointInput = document.getElementById('endpoint');
+    const modelInput = document.getElementById('model');
+
+    // Prefill
+    if(DEFAULTS.MODEL){ modelInput.value = DEFAULTS.MODEL }
+
+    // Load key đã lưu
+    (function(){
+      const k = localStorage.getItem('gemmini_key');
+      if(k){ apiKeyInput.placeholder = 'API key đã lưu ✓' }
+    })()
+
+    // Lưu key vào localStorage
+    saveKeyBtn.addEventListener('click', ()=>{
+      localStorage.setItem('gemmini_key', apiKeyInput.value.trim());
+      toast('Đã lưu API key vào trình duyệt (localStorage).');
+    })
+
+    function addBubble(text, role='ai'){
+      const el=document.createElement('div'); el.className=`bubble ${role}`; el.innerHTML=text;
+      chatWindow.appendChild(el); chatWindow.scrollTop=chatWindow.scrollHeight; return el;
+    }
+    function addTyping(){
+      const el=document.createElement('div'); el.className='bubble ai typing'; el.innerHTML='<span></span><span></span><span></span>';
+      chatWindow.appendChild(el); chatWindow.scrollTop=chatWindow.scrollHeight; return el;
+    }
+
+    function escapeHtml(str){ return str.replace(/[&<>"']/g, s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s])) }
+
+    async function sendMessage(){
+      const text = input.value.trim(); if(!text) return;
+      addBubble(escapeHtml(text), 'user'); input.value=''; autoGrow(input);
+      const typing = addTyping();
+
+      // Lấy provider
+      const provider = (document.querySelector('input[name="provider"]:checked')?.value) || DEFAULTS.PROVIDER || 'gemini';
+
+      // Lấy key & endpoint
+      const apiKey = (useDefault.checked ? (DEFAULTS.API_KEY || '') : '') || localStorage.getItem('gemmini_key') || apiKeyInput.value.trim();
+      const endpoint = (useDefault.checked ? (DEFAULTS.ENDPOINT || endpointInput.value.trim()) : endpointInput.value.trim());
+      const model = (useDefault.checked ? (DEFAULTS.MODEL || modelInput.value.trim()) : modelInput.value.trim()) || (provider==='gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini');
+
+      // Hàm gọi Gemini (Google)
+      async function callGemini(){
+        if(!apiKey){ throw new Error('Thiếu API key (Gemini).') }
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text }] }],
+            generationConfig: { temperature: 0.9 }
+          })
+        });
+        if(!resp.ok){
+          const errText = await resp.text();
+          throw new Error('Gemini HTTP '+resp.status+': '+errText.slice(0,180));
+        }
+        const data = await resp.json();
+        const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Không nhận được phản hồi từ Gemini.';
+        return answer;
+      }
+
+      // Hàm gọi OpenAI‑compatible
+      async function callOpenAI(){
+        if(!apiKey || !endpoint){ throw new Error('Thiếu endpoint hoặc API key (OpenAI‑compatible).') }
+        const resp = await fetch(endpoint, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify({ model, messages:[{role:'user', content:text}], stream:false })
+        })
+        if(!resp.ok){
+          const errText = await resp.text();
+          throw new Error('OpenAI HTTP '+resp.status+': '+errText.slice(0,180));
+        }
+        const data = await resp.json();
+        const answer = data?.choices?.[0]?.message?.content || 'Không nhận được phản hồi từ API.';
+        return answer;
+      }
+
+      try{
+        let answer = '';
+        if(provider==='gemini'){
+          answer = await callGemini();
+        } else {
+          answer = await callOpenAI();
+        }
+        typing.remove();
+        if(streaming && streaming.checked){
+          const holder = addBubble('', 'ai');
+          for(const ch of answer){ holder.innerHTML += ch==='
+' ? '<br/>' : escapeHtml(ch); await new Promise(r=>setTimeout(r, 8)); chatWindow.scrollTop=chatWindow.scrollHeight }
+        } else {
+          addBubble(escapeHtml(answer), 'ai');
+        }
+      } catch(err){
+        typing.remove();
+        addBubble('❌ Lỗi gọi API: '+escapeHtml(err.message)+'. Kiểm tra key / model / quyền truy cập / CORS.', 'ai');
+      }
+    }
+
+    clearBtn.addEventListener('click', ()=>{ chatWindow.innerHTML = '<div class="bubble ai">Đoạn chat đã được làm mới. Bắt đầu câu hỏi mới nhé! ✨</div>' })
+    sendBtn.addEventListener('click', sendMessage)
+    input.addEventListener('keydown', e=>{ if(enterToSend.checked && e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage() } })
+  </script></body>
+</html>
